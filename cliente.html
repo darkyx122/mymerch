@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Serviços - MyMerch</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #a41c59;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .header {
+      background-color: #4f0d2b;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .back-button {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .back-button:hover {
+      text-decoration: underline;
+    }
+
+    .back-button::before {
+      content: "←";
+      margin-right: 5px;
+    }
+
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    .user-options {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .menu-dots {
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 0.5px solid white;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background-color: #4f0d2b;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      min-width: 180px;
+      z-index: 1000;
+    }
+
+    .dropdown-menu a {
+      padding: 12px 16px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background 0.3s;
+    }
+
+    .dropdown-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #a41c59;
+    }
+
+    .main-content {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px 20px;
+      min-height: calc(100vh - 60px);
+      box-sizing: border-box;
+    }
+
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 28px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .description {
+      color: #666;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #555;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+      height: 48px;
+    }
+
+    .divider {
+      border-top: 1px solid #eee;
+      margin: 30px 0;
+    }
+
+    .submit-btn {
+      background-color: #4f0d2b;
+      color: white;
+      border: none;
+      padding: 16px 25px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+      transition: background-color 0.3s;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background-color: #f72585;
+    }
+
+    .code-display {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 4px;
+      border: 1px dashed #ccc;
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .code-value {
+      color: #f72585;
+      font-size: 18px;
+    }
+
+    @media (min-width: 768px) {
+      .double-column {
+        display: flex;
+        gap: 25px;
+      }
+
+      .double-column .form-group {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <a href="main_cliente.html" class="back-button">Voltar</a>
+    <div class="logo">MyMerch</div>
+    <div class="user-options">
+      <div class="menu-dots" title="Mais opções" onclick="toggleMenu()">⋮</div>
+      <img src="https://i.pinimg.com/736x/0c/76/40/0c7640ce594d7f983547e32f01ede503.jpg" alt="Foto de Perfil" class="profile-pic">
+      <div class="dropdown-menu" id="dropdownMenu">
+        <a href="usuários.html">Usuários</a>
+        <a href="#">Meu Perfil</a>
+        <a href="#">Configurações</a>
+        <a href="#">Sobre a Empresa</a>
+        <a href="login.html">Sair</a>
+      </div>
+    </div>
+  </div>
+
+ <div class="main-content">
+    <div class="container">
+      <h1>Cadastro de Clientes</h1>
+
+    <form id="form-cliente" action="salvar_cliente.php" method="POST">
+        <div class="form-group">
+          <label for="id-cliente">ID do Cliente*</label>
+          <input type="text" id="id-cliente" name="idCliente" readonly />
+        </div>
+
+        <div class="form-group">
+          <label for="cpf-cnpj">CPF/CNPJ*</label>
+          <input type="text" id="cpf-cnpj" name="cpfCnpj" placeholder="Digite CPF ou CNPJ" required />
+        </div>
+
+        <div class="form-group">
+          <label for="celular">Celular*</label>
+          <input type="tel" id="celular" name="celular" placeholder="(99) 99999-9999" required pattern="\(\d{2}\) \d{4,5}-\d{4}" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-mail*</label>
+          <input type="email" id="email" name="email" placeholder="Digite o e-mail" required />
+        </div>
+
+        <div class="form-group">
+          <label for="endereco">Endereço*</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Digite o endereço completo" required />
+        </div>
+
+        <div class="form-group">
+          <label for="nascimento">Data de Nascimento*</label>
+          <input type="date" id="nascimento" name="nascimento" required />
+        </div>
+
+        <button type="submit" class="submit-btn">CADASTRAR CLIENTE</button>
+      </form>
+    </div>
+  </div>
+
+<script>
+   function gerarIdSequencial() {
+    let ultimoId = localStorage.getItem('ultimoIdCliente');
+    let proximoId = 1;
+    if (ultimoId) {
+      proximoId = parseInt(ultimoId) + 1;
+    }
+    return proximoId.toString().padStart(6, '0');
+  }
+
+  function atualizarIdCampo() {
+    document.getElementById('id-cliente').value = gerarIdSequencial();
+  }
+
+  window.onload = function() {
+    atualizarIdCampo(); // Preenche o campo ID com o próximo ID disponível no carregamento
+  };
+
+  document.getElementById('form-cliente').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const idCliente = document.getElementById('id-cliente').value.trim();
+    const cpfCnpj = document.getElementById('cpf-cnpj').value.trim();
+    const celular = document.getElementById('celular').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const endereco = document.getElementById('endereco').value.trim();
+    const nascimento = document.getElementById('nascimento').value;
+
+    alert(
+      `Cliente cadastrado com sucesso!\n\n` +
+      `ID: ${idCliente}\n` +
+      `CPF/CNPJ: ${cpfCnpj}\n` +
+      `Celular: ${celular}\n` +
+      `Email: ${email}\n` +
+      `Endereço: ${endereco}\n` +
+      `Nascimento: ${nascimento}`
+    );
+
+    localStorage.setItem('ultimoIdCliente', parseInt(idCliente));
+
+    this.reset(); 
+
+  });
+
+  function toggleMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('dropdownMenu');
+            const isClickInside = document.querySelector('.user-options').contains(event.target);
+            if (!isClickInside) {
+                menu.style.display = 'none';
+            }
+        });
+
+</script>
+
+</body>
+</html>

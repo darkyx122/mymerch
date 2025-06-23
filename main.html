@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - MyMerch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #a41c59;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .header {
+      background-color: #4f0d2b;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .left-group {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 24px;
+      letter-spacing: 1px;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-menu a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px;
+      transition: background 0.3s;
+    }
+    .nav-menu a:hover {
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 4px;
+    }
+    .user-options {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+    .menu-dots {
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+    }
+    .profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 0.5px solid white;
+}
+    .dropdown-menu {
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background-color: #4f0d2b;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      min-width: 180px;
+      z-index: 1000;
+    }
+    .dropdown-menu a {
+      padding: 12px 16px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.3s;
+    }
+    .dropdown-menu a:last-child { border-bottom: none; }
+    .dropdown-menu a:hover { background-color: #f72585; }
+    .main-content {
+      padding: 30px 20px;
+      box-sizing: border-box;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 350px;
+    }
+    .card h2 {
+      margin: 0 0 20px;
+      font-size: 20px;
+      color: #333;
+    }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="header">
+    <div class="left-group">
+      <div class="logo">MyMerch</div>
+      <nav class="nav-menu">
+        <a href="main_produtos.html">Estoque</a>
+        <a href="main_serviços.html">Serviços</a>
+        <a href="main_cliente.html">Clientes</a>
+      </nav>
+    </div>
+    <div class="user-options">
+      <div class="menu-dots" title="Mais opções" onclick="toggleMenu()">⋮</div>
+      <img src="https://i.pinimg.com/736x/0c/76/40/0c7640ce594d7f983547e32f01ede503.jpg" alt="Avatar Anônimo" class="profile-pic" />
+      <div class="dropdown-menu" id="dropdownMenu">
+        <a href="main_usuários.html">Usuários</a>
+        <a href="#">Meu Perfil</a>
+        <a href="#">Configurações</a>
+        <a href="#">Sobre a Empresa</a>
+        <a href="login.html">Sair</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="dashboard-grid">
+      <div class="card">
+        <h2>Vendas (Últimos 7 dias)</h2>
+        <canvas id="chartVendas"></canvas>
+      </div>
+      <div class="card">
+        <h2>Itens com Estoque Baixo</h2>
+        <canvas id="chartEstoque"></canvas>
+      </div>
+      <div class="card">
+        <h2>Cadastros Recentes</h2>
+        <canvas id="chartCadastros"></canvas>
+      </div>
+      <div class="card">
+        <h2>Relatório Fiscal</h2>
+        <canvas id="chartFiscal"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    }
+    document.addEventListener('click', function(event) {
+      const menu = document.getElementById('dropdownMenu');
+      if (!document.querySelector('.user-options').contains(event.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    // Dados de exemplo com tons de rosa do site
+    const vendasData = {
+      labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      datasets: [{
+        label: 'R$ Vendido',
+        data: [500, 700, 650, 800, 900, 750, 850],
+        borderColor: '#f72585',
+        backgroundColor: 'transparent',
+        pointBackgroundColor: '#f72585',
+        tension: 0.4,
+        borderWidth: 2
+      }]
+    };
+    const estoqueData = {
+      labels: ['Item A', 'Item B', 'Item C', 'Item D', 'Item E'],
+      datasets: [{
+        label: 'Qtd em Estoque',
+        data: [5, 3, 8, 2, 4],
+        backgroundColor: 'rgba(247,37,133,0.4)',
+        borderWidth: 0
+      }]
+    };
+    const cadastrosData = {
+      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+      datasets: [{
+        label: 'Novos Cadastros',
+        data: [12, 15, 10, 18, 20, 22],
+        backgroundColor: 'rgba(247,37,133,0.6)',
+        borderWidth: 0
+      }]
+    };
+    const fiscalData = {
+      labels: ['T1', 'T2', 'T3', 'T4'],
+      datasets: [{
+        label: 'Impostos (R$)',
+        data: [1200, 1500, 1300, 1700],
+        backgroundColor: 'rgba(164,28,89,0.6)',
+        borderWidth: 0
+      }]
+    };
+
+    const chartOptions = {
+      scales: {
+        x: { grid: { display: false }, border: { display: false } },
+        y: { grid: { display: false }, border: { display: false } }
+      },
+      plugins: { legend: { display: false } }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      new Chart(document.getElementById('chartVendas'), { type: 'line', data: vendasData, options: chartOptions });
+      new Chart(document.getElementById('chartEstoque'), { type: 'bar', data: estoqueData, options: chartOptions });
+      new Chart(document.getElementById('chartCadastros'), { type: 'bar', data: cadastrosData, options: chartOptions });
+      new Chart(document.getElementById('chartFiscal'), { type: 'bar', data: fiscalData, options: chartOptions });
+    });
+  </script>
+</body>
+</html>
